@@ -16,7 +16,7 @@ Vue.use(VueSocketio, IO)
 /* eslint-disable no-new */
 var app = new Vue({
   beforeCreate: () => {
-    this.$socket = IO // Workaround because otherwise it doesn't fucking work. Yes I'm pissed about it.
+    this.$socket = IO // Workaround because it doesn't work normally.
   },
   el: '#app',
   router,
