@@ -11,6 +11,7 @@
         <button v-on:click="addProposal()">+</button>
       </li>
     </ul>
+    <button v-on:click="pingServer()">Ping server!</button>
   </div>
 </template>
 
@@ -23,7 +24,17 @@ export default {
       newProposalDescr: ''
     }
   },
+  sockets: {
+    msgFromServer(data) {
+      console.log('Message from server incoming!')
+      console.log(data)
+    }
+  },
   methods: {
+    pingServer: (data) => {
+      console.log("I'm trying ):")
+      this.$socket.emit('pingServer', 'Ping!')
+    },
     addProposal: function () {
       let data = { description: this.$data.newProposalDescr }
       this.$http.post('http://localhost:3000/rest/proposal', data).then(res => {
@@ -35,6 +46,9 @@ export default {
       this.$http.delete('http://localhost:3000/rest/proposal/' + id).then(res => {
         this.$data.proposals = res.data;
       });
+    },
+    clickButton: () => {
+      this.$socket.emit('msg', 'lolpan')
     }
   },
   created () {
