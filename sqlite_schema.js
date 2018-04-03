@@ -1,14 +1,16 @@
 // A MongoDB-inspired schema class for generating a table from a JSON object.
 module.exports = class { 
   constructor(modelName, specs) {
+    this.modelName = modelName;
     this.tableName = modelName + 's';
     this.specs = specs;
-
-    specs[modelName + "ID"] = "INTEGER PRIMARY KEY AUTOINCREMENT";
   }
 
   get createTableSQL() {
     let sql = "CREATE TABLE IF NOT EXISTS " + this.tableName + "(";
+
+    // Add ID
+    sql += this.modelName + "ID INTEGER PRIMARY KEY AUTOINCREMENT, ";
 
     let colcount = Object.keys(this.specs).length;
 

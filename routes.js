@@ -1,27 +1,60 @@
 // Maps all the routes
 
 const proposal = require('./proposal');
-const participant = require('./participant');
 const vote = require('./vote');
+const participant = require('./participant');
+const authentication = require('./authentication');
 const path = require('path');
 
-exports.assignRoutes = function (app) {
+let routes = [
+  {
+    baseRoute: '/rest/proposal',
+    controller: proposal
+  },
+  {
+    baseRoute: '/rest/participant',
+    controller: participant
+  },
+  {
+    baseRoute: '/rest/vote',
+    controller: vote
+  }
+];
+
+exports.assignRoutes = (app) => {
   app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
   });
 
-  app.post('/rest/proposal', proposal.create);
-  app.get('/rest/proposal', proposal.getAll);
-  app.get('/rest/proposal/:id', proposal.getByID);
-  app.delete('/rest/proposal/:id', proposal.deleteByID);
+  for (let route of routes) {
+    let baseRoute = route.baseRoute;
+    let controller = route.controller;
 
-  app.post('/rest/participant', participant.create);
-  app.get('/rest/participant', participant.getAll);
-  app.get('/rest/participant/:id', participant.getByID);
-  app.delete('/rest/participant/:id', participant.deleteByID);
+    // Assign all the routes with arrow functions, to avoid a bug with "this is undefined"
+    app.post(baseRoute, (req, res, next) => {
+      controller.create(req, res, next);
+    });
 
-  app.post('/rest/vote', vote.create);
-  app.get('/rest/vote', vote.getAll);
-  app.get('/rest/vote/:id', vote.getByID);
-  app.delete('/rest/vote/:id', vote.deleteByID);
+    app.get(baseRoute, (req, res, next) => {
+      controller.getAll(req, res, next);
+    });
+
+    app.get(baseRoute + '/:id', (req, res, next) => {
+      controller.getByID(req, res, next);
+    });
+
+    app.delete(baseRoute + '/:id', (req, res, next) => {
+      controller.deleteByID(req, res, next);
+    });
+  }
+
+  app.get('/rest/login', (req, res, next) => {
+    authentication.login(req, res, next);
+  });
+
+  // general 404 error handling
+  app.use(function (err, req, res, next) {
+    res.status(404);
+    res.send('could not find route ):');
+  });
 };

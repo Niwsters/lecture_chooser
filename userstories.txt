@@ -1,6 +1,6 @@
 As a participant, I want to:
-* read current proposals
-* add new proposals
+* read current proposals DONE!
+* add new proposals DONE!
 * edit proposals
 * vote on proposals
 * view total votes on a proposal, if votes are made public

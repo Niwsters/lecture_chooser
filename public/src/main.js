@@ -1,35 +1,34 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import VueResource from 'vue-resource'
 import App from './App'
 import socketio from 'socket.io-client'
 import VueSocketio from 'vue-socket.io'
 import router from './router'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import VueSession from 'vue-session'
 
 Vue.config.productionTip = false
 
+axios.defaults.withCredentials = true
+
 let IO = socketio('http://localhost:3000')
-Vue.use(VueResource);
+Vue.use(VueAxios, axios)
 Vue.use(VueSocketio, IO)
+Vue.use(VueSession)
 
 /* eslint-disable no-new */
 var app = new Vue({
   beforeCreate: () => {
-    this.$socket = IO // Workaround because it doesn't work normally.
   },
   el: '#app',
   router,
   components: { App },
-  template: '<div><App/><button v-on:click="pingServer">Ping server!</button></div>',
+  template: '<App/>',
   sockets: {
     connect: () => {
       console.log('Connected from component!')
-    }
-  },
-  methods: {
-    pingServer: () => {
-      this.$socket.emit('pingServer', 'Hello from client! :D')
     }
   }
 })

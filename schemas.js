@@ -7,6 +7,7 @@ exports.participant = {
 };
 
 exports.vote = {
-  participantID: "integer unique",
-  proposalID: "integer"
+  participantID: "integer",
+  proposalID: "integer",
+  CONSTRAINT: "unq UNIQUE (participantID, proposalID)"
 };

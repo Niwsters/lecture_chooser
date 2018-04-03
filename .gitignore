@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+
+# password VERY SIKRIT
+passwords.js

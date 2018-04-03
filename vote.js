@@ -1,30 +1,8 @@
-const sqlite_schema = require('./sqlite_schema');
-const VoteModel = require('./vote_model');
+const VoteModel = require('./models/vote_model');
+const Route = require('./route');
 
-exports.create = function (req, res) {
-  let proposalData = req.body; 
+Route.Model = VoteModel;
 
-  let model = new VoteModel(proposalData);
-  model.save();
+VoteRoute = new Route(VoteModel);
 
-  res.send('Vote was... HOPEFULLY created.');
-};
-
-exports.getAll = function (req, res) {
-  VoteModel.getAll().then(proposals => { 
-    res.send(proposals);
-  });
-};
-
-exports.getByID = function (req, res) {
-  VoteModel.getByID(req.params.id).then(proposal => {
-    console.log(proposal);
-    res.send(proposal);
-  });
-};
-
-exports.deleteByID = function (req, res) {
-  VoteModel.removeByID(req.params.id);
-
-  res.send('Vote was... HOPEFULLY deleted.');
-};
+module.exports = VoteRoute;

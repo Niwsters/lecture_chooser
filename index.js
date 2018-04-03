@@ -4,13 +4,30 @@ const bodyParser = require('body-parser');
 const routes = require('./routes');
 const db = require('./db');
 
+const session = require('express-session');
+
+const cors = require('cors');
+
 
 db.connect().then(() => {
   db.createTables();
 
   let app = express();
+
+  app.use(session({
+    secret: 'hakhamaneshi',
+    resave: false,
+    saveUninitialized: true
+  }));
+
+  app.use(cors({
+    origin: ['http://localhost:8080'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  }));
+
   app.use(bodyParser.json());
-  app.set('view engine', 'pug');
+
   routes.assignRoutes(app);
 
   let server = require('http').createServer(app);

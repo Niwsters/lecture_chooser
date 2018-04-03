@@ -1,7 +1,7 @@
 // Connects an individual proposal model to the DB.
 
-const SQLModel = require('./sql_model');
-const db = require('./db');
+const SQLModel = require('./../sql_model');
+const db = require('./../db');
 
 class Model {
   constructor(data) {
@@ -16,6 +16,7 @@ class Model {
   }
 
   static getAll() {
+    console.log(this);
     let sql = SQLModel.selectAllSQL(this.tableName);
     return db.select(sql);
   }
@@ -41,7 +42,5 @@ class Model {
     return idColName;
   }
 }
-
-Model.tableName = '';
 
 module.exports = Model;

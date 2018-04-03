@@ -1,8 +1,6 @@
-// Connects an individual proposal model to the DB.
-
-const SQLModel = require('./sql_model');
-const db = require('./db');
 const Model = require('./model');
+const SQLModel = require('./../sql_model');
+const db = require('./../db');
 
 class ParticipantModel extends Model {
   constructor(data) {
@@ -11,6 +9,16 @@ class ParticipantModel extends Model {
     }
 
     super(data);
+  }
+  
+  static getByName(name) {
+    let wheres = {
+      name: name
+    };
+
+    let sql = SQLModel.selectWhereSQL(this.tableName, wheres);
+
+    return db.select(sql);
   }
 }
 

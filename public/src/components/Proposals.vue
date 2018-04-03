@@ -5,6 +5,8 @@
       <li v-for="proposal in proposals">
         <button v-on:click="removeProposal(proposal.proposalID)">x</button>
         {{ proposal.description }}
+        {{ proposal.votes.length }}
+        <button v-on:click="addVote(proposal.proposalID)">Vote</button>
       </li>
       <li>
         <textarea v-model="newProposalDescr" rows="4"></textarea>
@@ -17,7 +19,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'LectureChooser',
   data () {
     return {
       proposals: [],
@@ -38,25 +40,45 @@ export default {
     addProposal: function () {
       let data = { description: this.$data.newProposalDescr }
       this.$http.post('http://localhost:3000/rest/proposal', data).then(res => {
-        this.$data.proposals = res.data;
+        this.getProposals()
         this.$data.newProposalDescr = '';
+      }, err => {
+        console.log(err)
       });
     },
     removeProposal: function(id) {
       this.$http.delete('http://localhost:3000/rest/proposal/' + id).then(res => {
-        this.$data.proposals = res.data;
+        this.getProposals()
+      }, err => {
+        console.log(err)
       });
     },
-    clickButton: () => {
-      this.$socket.emit('msg', 'lolpan')
+    pingServer: function() {
+      this.$socket.emit('pingServer', 'Hi from client! :D')
+    },
+    addVote: function (proposalID) {
+      let participant = this.$session.get('participant')
+      let participantID = participant.participantID
+      let data = {
+        participantID: participantID,
+        proposalID: proposalID
+      }
+      this.$http.post('http://localhost:3000/rest/vote', data).then(res => {
+        this.getProposals()
+      }, err => {
+        console.log(err)
+      })
+    },
+    getProposals: function () {
+      this.$http.get('http://localhost:3000/rest/proposal').then(res => {
+        this.proposals = res.data
+      }, err => {
+        console.log(err)
+      }); 
     }
   },
-  created () {
-    this.$http.get('http://localhost:3000/rest/proposal').then(res => {
-      this.proposals = res.data;
-    }, err => {
-      //TODO: Implement error handling
-    });
+ created () {
+    this.getProposals()
   }
 }
 </script>
